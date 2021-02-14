@@ -1,0 +1,24 @@
+spring:
+  application.name: service-chassis-spring
+  zipkin:
+    baseUrl: ${ZIPKIN_URL}
+    sender:
+      type: web
+  sleuth:
+    web:
+      additional-skip-pattern: "/actuator.*"
+    sampler:
+      probability: ${ZIPKIN_SAMPLE_RATE:0.1}
+  cloud:
+    discovery:
+      client:
+        composite-indicator:
+          enabled: false
+
+management:
+  endpoints.web:
+    exposure.include: ping, health, heapdump, threaddump, loggers, prometheus, jolokia, hawtio
+  endpoint.health.show-details: always
+
+hawtio:
+  authenticationEnabled: false

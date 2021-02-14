@@ -1,0 +1,9 @@
+version: "3.7"
+
+services:
+  service:
+    build: ../../../
+    ports:
+      - 8080
+    environment:
+      LOGBACK_CONFIGURATION: "logback.xml"

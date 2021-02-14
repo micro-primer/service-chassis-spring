@@ -1,0 +1,2 @@
+ZIPKIN_SAMPLE_RATE: 1.0
+ZIPKIN_URL: "{{zipkin_url}}"
