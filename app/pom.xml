@@ -91,7 +91,12 @@
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
         </dependency>
-<!--        <dependency>-->
+        <dependency>
+            <groupId>org.jolokia</groupId>
+            <artifactId>jolokia-spring</artifactId>
+            <version>${jolokia.version}</version>
+        </dependency>
+        <!--        <dependency>-->
 <!--            <groupId>org.springframework.boot</groupId>-->
 <!--            <artifactId>spring-boot-actuator-autoconfigure</artifactId>-->
 <!--            <version>${spring-boot.version}</version>-->

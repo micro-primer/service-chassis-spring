@@ -48,7 +48,7 @@ public class SmokeTest {
                 .baseUri(environment.serviceUrl()) //example how to get url of the random instance
                 .queryParam("mimeType", "application/json")
         .when()
-                .get("/actuator/hawtio/jolokia")
+                .get("/actuator/jolokia")
         .then()
                 .body("status", equalTo(200))
                 .body("request.type", equalTo("version"))
