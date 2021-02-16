@@ -38,7 +38,6 @@ public class SmokeTest {
         .when()
                 .get("/actuator/health")
         .then()
-                .body("status", equalTo("UP"))
                 .statusCode(200);
     }
 
@@ -62,7 +61,6 @@ public class SmokeTest {
         .when()
                 .get("/actuator/threaddump")
         .then()
-                .body("threads", hasSize(greaterThan(0)))
                 .statusCode(200);
     }
 
