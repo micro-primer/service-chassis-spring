@@ -1,4 +1,4 @@
-= service-chassis-springboot
+= service-chassis-spring
 :toc: preamble
 
 ⚠️ Do not change anything! ⚠️
@@ -89,7 +89,7 @@ This is achieved through a docker containerization, as the final executable arti
 [quote]
 The twelve-factor app is completely self-contained and does not rely on runtime injection of a webserver into the execution environment to create a web-facing service. The web app exports HTTP as a service by binding to a port, and listening to requests coming in on that port.
 
-The port binding is delivered either through an embedded web container for a springboot application or through using a source container (like `jetty` or any other web container) within the `Dockerfile`.
+The port binding is delivered either through an embedded web container for a spring application or through using a source container (like `jetty` or any other web container) within the `Dockerfile`.
 
 === {counter:twelvefactors}. link:https://12factor.net/concurrency[Concurrency]
 

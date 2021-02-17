@@ -30,7 +30,7 @@ class SwaggerConfiguration {
                 .build()
                 .useDefaultResponseMessages(false)
                 .apiInfo(new ApiInfo(
-                        "service-chassis-springboot",
+                        "service-chassis-spring",
                         "This service provides an API for ...",
                         "",
                         "",
