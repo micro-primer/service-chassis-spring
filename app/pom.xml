@@ -20,7 +20,7 @@
         <spring.version>5.1.19.RELEASE</spring.version>
 <!--        <spring-cloud.version>Hoxton.SR9</spring-cloud.version>-->
         <micrometer.version>1.5.9</micrometer.version>
-        <swagger.version>2.9.2</swagger.version>
+        <swagger.version>3.0.0</swagger.version>
         <hawtio.version>2.12.1</hawtio.version>
         <jolokia.version>1.6.2</jolokia.version>
         <metrics-health.version>4.1.17</metrics-health.version>

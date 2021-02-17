@@ -76,4 +76,25 @@ public class SmokeTest {
                 .statusCode(200);
     }
 
+    @Test
+    void shouldExposeSwaggerApi() {
+        given()
+                .baseUri(environment.serviceUrl()) //example how to get url of the random instance
+                .accept(ContentType.JSON)
+        .when()
+                .get("/v2/api-docs")
+        .then()
+                .body("swagger", equalTo("2.0"))
+                .statusCode(200);
+    }
+
+    @Test
+    void shouldExposeSwaggerUI() {
+        given()
+                .baseUri(environment.serviceUrl()) //example how to get url of the random instance
+        .when()
+                .get("/swagger-ui/index.html")
+        .then()
+                .statusCode(200);
+    }
 }
