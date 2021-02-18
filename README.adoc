@@ -184,8 +184,8 @@ We should have as fast test feedback as possible to use TDD approach effectively
 A following structure for tests is proposed:
 
 - *unit* - no IO, just logic, runnable from the IDE. Run: `./mvnw test`
-- *integration* - IO, contracts, REST tests and all needing spring context in general, runnable from the IDE. Run: `./mvnw integration-test -pl app`
-- *blackBox* - system tests needing everything to be up and our application running from docker. Run: `./mvn integration-test -pl blackboxtests`
+- *integration* - IO, contracts, REST tests and all needing spring context in general, runnable from the IDE. Run: `./mvnw verify -pl app`
+- *blackBox* - system tests that needs everything to be setup and the application is running from docker. Run: `./mvn verify -pl blackboxtests`
 
 .Consequences
 A typical execution time varies for each test type: from miliseconds for unit tests, through seconds for integration testing, up to minutes to run a complete black box test suite.
