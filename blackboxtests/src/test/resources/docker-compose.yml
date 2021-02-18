@@ -3,7 +3,14 @@ version: "3.7"
 services:
   service:
     build: ../../../
+    environment:
+      ZIPKIN_URL: http://zipkin:8080
+      ZIPKIN_SAMPLE_RATE: 1.0
+      LOGBACK_CONFIGURATION: "logback.xml"
+    links:
+      - wiremock:zipkin
     ports:
       - 8080
-    environment:
-      LOGBACK_CONFIGURATION: "logback.xml"
+
+  wiremock:
+    image: rodolpheche/wiremock:2.24.0-alpine

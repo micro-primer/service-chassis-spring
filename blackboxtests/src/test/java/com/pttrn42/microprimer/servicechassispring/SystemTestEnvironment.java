@@ -1,5 +1,7 @@
 package com.pttrn42.microprimer.servicechassispring;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.client.WireMockBuilder;
 import io.restassured.RestAssured;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
@@ -13,6 +15,8 @@ import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.IntStream;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.testcontainers.containers.DockerComposeContainer.RemoveImages.LOCAL;
 
@@ -22,6 +26,8 @@ class SystemTestEnvironment implements BeforeAllCallback {
 
     private final String SERVICE_BASE_NAME = "service";
     private final int SERVICE_PORT = 8080;
+    private static final String WIREMOCK_CONTAINER = "wiremock_1";
+    private static final int WIREMOCK_PORT = 8080;
 
     private DockerComposeContainer environment;
     private boolean environmentStarted = false;
@@ -31,6 +37,7 @@ class SystemTestEnvironment implements BeforeAllCallback {
         if (!environmentStarted) {
             environment = new DockerComposeContainer(getDockerComposeFile())
                     .withLocalCompose(true)
+                    .withExposedService(WIREMOCK_CONTAINER, WIREMOCK_PORT, Wait.forListeningPort())
                     .withScaledService(SERVICE_BASE_NAME, SERVICE_NUM_INSTANCES)
                     .withRemoveImages(LOCAL);
 
@@ -44,6 +51,7 @@ class SystemTestEnvironment implements BeforeAllCallback {
             environmentStarted = true;
         }
 
+        givenZipkinSupport();
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
         Runtime.getRuntime().addShutdownHook(new Thread(environment::stop));
     }
@@ -80,6 +88,21 @@ class SystemTestEnvironment implements BeforeAllCallback {
         return String.format("http://%s:%d",
                 environment.getServiceHost(serviceInstanceName, SERVICE_PORT),
                 environment.getServicePort(serviceInstanceName, SERVICE_PORT));
+    }
+
+    WireMock wireMock() {
+        return new WireMockBuilder()
+                .host(environment.getServiceHost(WIREMOCK_CONTAINER, WIREMOCK_PORT))
+                .port(environment.getServicePort(WIREMOCK_CONTAINER, WIREMOCK_PORT))
+                .build();
+    }
+
+    void givenZipkinSupport() {
+        wireMock().register(WireMock.post("/api/v2/spans")
+                .withHeader("Host", equalTo("zipkin:8080"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                ));
     }
 
     private String getServiceInstanceName(int instanceNumber) {

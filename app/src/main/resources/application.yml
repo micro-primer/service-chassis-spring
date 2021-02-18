@@ -1,7 +1,7 @@
 spring:
   application.name: service-chassis-spring
   zipkin:
-    baseUrl: ${ZIPKIN_URL}
+    baseUrl: ${ZIPKIN_URL:}
     sender:
       type: web
   sleuth:

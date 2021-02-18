@@ -1,7 +1,10 @@
 package com.pttrn42.microprimer.servicechassispring.infrastructure.servlet;
 
+import brave.spring.webmvc.DelegatingTracingFilter;
 import com.pttrn42.microprimer.servicechassispring.ApplicationConfiguration;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
+
+import javax.servlet.Filter;
 
 public class WebInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
@@ -15,6 +18,11 @@ public class WebInitializer extends AbstractAnnotationConfigDispatcherServletIni
     @Override
     protected Class<?>[] getRootConfigClasses() {
         return new Class[] { ApplicationConfiguration.class };
+    }
+
+    @Override
+    protected Filter[] getServletFilters() {
+        return new Filter[] { new DelegatingTracingFilter() };
     }
 
     @Override

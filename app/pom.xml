@@ -18,8 +18,8 @@
     <properties>
         <failOnMissingWebXml>false</failOnMissingWebXml>
         <spring.version>5.1.19.RELEASE</spring.version>
-<!--        <spring-cloud.version>Hoxton.SR9</spring-cloud.version>-->
         <micrometer.version>1.5.9</micrometer.version>
+        <brave.version>5.13.1</brave.version>
         <swagger.version>3.0.0</swagger.version>
         <hawtio.version>2.12.1</hawtio.version>
         <jolokia.version>1.6.2</jolokia.version>
@@ -43,13 +43,13 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-<!--            <dependency>-->
-<!--                <groupId>org.springframework.cloud</groupId>-->
-<!--                <artifactId>spring-cloud-dependencies</artifactId>-->
-<!--                <version>${spring-cloud.version}</version>-->
-<!--                <type>pom</type>-->
-<!--                <scope>import</scope>-->
-<!--            </dependency>-->
+            <dependency> <!-- tracing support -->
+                <groupId>io.zipkin.brave</groupId>
+                <artifactId>brave-bom</artifactId>
+                <version>${brave.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -66,6 +66,14 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
         </dependency>
+        <!-- yaml configuration as in spring-boot -->
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.27</version>
+        </dependency>
+
+        <!-- swagger -->
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
@@ -76,28 +84,21 @@
             <artifactId>springfox-swagger-ui</artifactId>
             <version>${swagger.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.yaml</groupId>
-            <artifactId>snakeyaml</artifactId>
-            <version>1.27</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>4.0.1</version>
-            <scope>provided</scope>
-        </dependency>
 
-        <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-registry-prometheus</artifactId>
-        </dependency>
+        <!-- jmx -->
         <dependency>
             <groupId>org.jolokia</groupId>
             <artifactId>jolokia-spring</artifactId>
             <version>${jolokia.version}</version>
         </dependency>
 
+        <!-- metrics: meter registry -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
+
+        <!-- healthchecks -->
         <dependency>
             <groupId>io.dropwizard.metrics</groupId>
             <artifactId>metrics-healthchecks</artifactId>
@@ -108,25 +109,52 @@
             <artifactId>metrics-servlets</artifactId>
             <version>${metrics-health.version}</version>
         </dependency>
-        <!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-actuator-autoconfigure</artifactId>-->
-<!--            <version>${spring-boot.version}</version>-->
-<!--        </dependency>-->
 
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.cloud</groupId>-->
-<!--            <artifactId>spring-cloud-starter-sleuth</artifactId>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.cloud</groupId>-->
-<!--            <artifactId>spring-cloud-starter-zipkin</artifactId>-->
-<!--        </dependency>-->
+        <!-- tracing -->
+        <!-- Adds the MVC class and method names to server spans -->
+        <dependency>
+            <groupId>io.zipkin.brave</groupId>
+            <artifactId>brave-instrumentation-spring-webmvc</artifactId>
+        </dependency>
+        <!-- Instruments the RestTemplate requests that call the backend -->
+        <dependency>
+            <groupId>io.zipkin.brave</groupId>
+            <artifactId>brave-instrumentation-spring-web</artifactId>
+        </dependency>
+        <!-- Integrates so you can use log patterns like %X{traceId}/%X{spanId} -->
+        <dependency>
+            <groupId>io.zipkin.brave</groupId>
+            <artifactId>brave-context-slf4j</artifactId>
+        </dependency>
+        <!-- The below are needed to report traces to http://127.0.0.1:9411/api/v2/spans -->
+        <dependency>
+            <groupId>io.zipkin.brave</groupId>
+            <artifactId>brave-spring-beans</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.zipkin.brave</groupId>
+            <artifactId>brave</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.zipkin.reporter2</groupId>
+            <artifactId>zipkin-reporter-brave</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.zipkin.reporter2</groupId>
+            <artifactId>zipkin-sender-urlconnection</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
             <version>${logstash-logback-encoder.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -173,7 +201,9 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.22.2</version>
                 <executions>
                     <execution>
                         <goals>

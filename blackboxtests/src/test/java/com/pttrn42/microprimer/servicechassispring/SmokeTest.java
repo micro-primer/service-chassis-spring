@@ -11,8 +11,6 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 
 @Slf4j
 public class SmokeTest {
@@ -25,9 +23,9 @@ public class SmokeTest {
     void pingPongs(RepetitionInfo repetitionInfo) {
         given()
                 .baseUri(environment.serviceUrl(repetitionInfo.getCurrentRepetition())) //example how to get url of the specific instance
-        .when()
+                .when()
                 .get("/actuator/ping")
-        .then()
+                .then()
                 .body(containsString("pong"))
                 .statusCode(200);
     }
@@ -36,9 +34,9 @@ public class SmokeTest {
     void shouldBeHealthy() {
         given()
                 .baseUri(environment.serviceUrl()) //example how to get url of the random instance
-        .when()
+                .when()
                 .get("/actuator/health")
-        .then()
+                .then()
                 .statusCode(200);
     }
 
@@ -47,9 +45,9 @@ public class SmokeTest {
         given()
                 .baseUri(environment.serviceUrl()) //example how to get url of the random instance
                 .queryParam("mimeType", "application/json")
-        .when()
+                .when()
                 .get("/actuator/jolokia")
-        .then()
+                .then()
                 .body("status", equalTo(200))
                 .body("request.type", equalTo("version"))
                 .statusCode(200);
@@ -60,9 +58,9 @@ public class SmokeTest {
     void shouldExposeHawtioUi() {
         given()
                 .baseUri(environment.serviceUrl()) //example how to get url of the random instance
-        .when()
+                .when()
                 .get("/actuator/hawtio")
-        .then()
+                .then()
                 .body(containsString("<title>Hawtio</title>"))
                 .statusCode(200);
     }
@@ -71,9 +69,9 @@ public class SmokeTest {
     void shouldExposeThreadDump() {
         given()
                 .baseUri(environment.serviceUrl()) //example how to get url of the random instance
-        .when()
+                .when()
                 .get("/actuator/threaddump")
-        .then()
+                .then()
                 .statusCode(200);
     }
 
@@ -82,9 +80,9 @@ public class SmokeTest {
         given()
                 .baseUri(environment.serviceUrl()) //example how to get url of the random instance
                 .accept(ContentType.TEXT)
-        .when()
+                .when()
                 .get("/actuator/prometheus")
-        .then()
+                .then()
                 .body(containsString("app=\"service-chassis-spring\""))
                 .statusCode(200);
     }
@@ -94,9 +92,9 @@ public class SmokeTest {
         given()
                 .baseUri(environment.serviceUrl()) //example how to get url of the random instance
                 .accept(ContentType.JSON)
-        .when()
+                .when()
                 .get("/v2/api-docs")
-        .then()
+                .then()
                 .body("swagger", equalTo("2.0"))
                 .statusCode(200);
     }
@@ -105,10 +103,11 @@ public class SmokeTest {
     void shouldExposeSwaggerUI() {
         given()
                 .baseUri(environment.serviceUrl()) //example how to get url of the random instance
-        .when()
+                .when()
                 .get("/actuator/swagger-ui/index.html")
-        .then()
+                .then()
                 .body(containsString("<title>Swagger UI</title>"))
                 .statusCode(200);
     }
+
 }
