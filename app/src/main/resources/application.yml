@@ -15,10 +15,5 @@ spring:
         composite-indicator:
           enabled: false
 
-management:
-  endpoints.web:
-    exposure.include: ping, health, heapdump, threaddump, loggers, prometheus, jolokia, hawtio
-  endpoint.health.show-details: always
-
 hawtio:
   authenticationEnabled: false
